@@ -1,4 +1,4 @@
-package io.mdcatapult.doclib.source
+package io.mdcatapult.source
 
 import java.io.IOException
 
