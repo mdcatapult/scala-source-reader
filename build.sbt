@@ -28,6 +28,7 @@ lazy val root = (project in file("."))
       }
     },
     libraryDependencies ++= {
+      val apachePoiVersion = "4.1.2"
       val tikaVersion = "1.24.1"
 
       Seq(
@@ -40,6 +41,12 @@ lazy val root = (project in file("."))
         "org.apache.tika" % "tika-core"                 % tikaVersion,
         "org.apache.tika" % "tika-parsers"              % tikaVersion,
         "org.apache.tika" % "tika-langdetect"           % tikaVersion,
+        "org.apache.poi" % "poi"                        % apachePoiVersion,
+        "org.apache.poi" % "poi-ooxml"                  % apachePoiVersion,
+        "org.apache.poi" % "poi-ooxml-schemas"          % apachePoiVersion,
+        "org.apache.pdfbox" % "jbig2-imageio"           % "3.0.3",
+        "com.github.jai-imageio" % "jai-imageio-jpeg2000" % "1.3.0",
+        "org.xerial" % "sqlite-jdbc"                    % "3.32.3.1",
       )
     }
   )

@@ -1,4 +1,4 @@
-package io.mdcatapult.doclib.source
+package io.mdcatapult.source
 
 import java.io.InputStream
 
@@ -8,12 +8,6 @@ object LimitedInputStream {
 
   /** Maximum number of bytes than we want to read into a single array. */
   val maxArraySize: Int = Int.MaxValue / 2
-
-  /** Create an InputStream that will throw an exception when more bytes than we want to read into
-    * a single array.
-    */
-  def readingIntoSingleArray(in: InputStream): LimitedInputStream =
-    new LimitedInputStream(in, maxArraySize)
 }
 
 /** Implements Apache's LimitedInputStream in a simple way that throws a InputStreamTooLongException

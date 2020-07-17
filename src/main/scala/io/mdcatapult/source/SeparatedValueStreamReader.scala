@@ -1,4 +1,4 @@
-package io.mdcatapult.doclib.source
+package io.mdcatapult.source
 
 import java.io.InputStream
 import java.nio.charset.Charset
@@ -19,13 +19,13 @@ class SeparatedValueStreamReader(defaultReader: StreamReader) extends StreamRead
 
   private val encodingDetector = new UniversalEncodingDetector()
 
-  override def readText(input: InputStream, name: String): String =
-    if (name.endsWith(".tsv"))
-      separatedValueExtract(input, fieldDelimiter = '\t')
-    else if (name.endsWith(".csv"))
-      separatedValueExtract(input, fieldDelimiter = ',')
+  override def readText(source: Source): String =
+    if (source.name.endsWith(".tsv"))
+      separatedValueExtract(source.input, fieldDelimiter = '\t')
+    else if (source.name.endsWith(".csv"))
+      separatedValueExtract(source.input, fieldDelimiter = ',')
     else
-      defaultReader.readText(input, name)
+      defaultReader.readText(source)
 
   private def separatedValueExtract(input: InputStream, fieldDelimiter: Char): String = {
     val lineDelimiter = "\n"

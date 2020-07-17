@@ -1,6 +1,4 @@
-package io.mdcatapult.doclib.source
-
-import java.io.InputStream
+package io.mdcatapult.source
 
 import org.apache.tika.Tika
 import org.apache.tika.metadata.Metadata
@@ -14,11 +12,11 @@ class TikaTextExtractingStreamReader extends StreamReader {
 
   private val tika = new Tika()
 
-  override def readText(input: InputStream, name: String): String = {
+  override def readText(source: Source): String = {
     val handler = new BodyContentHandler(-1)
 
     tika.getParser.parse(
-      input,
+      source.input,
       handler,
       new Metadata(),
       new ParseContext)
