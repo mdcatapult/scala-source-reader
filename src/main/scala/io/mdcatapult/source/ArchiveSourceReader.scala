@@ -1,9 +1,10 @@
-package io.mdcatapult.doclib.source
+package io.mdcatapult.source
 
 import java.io.{BufferedInputStream, InputStream}
 
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.commons.compress.archivers.{ArchiveInputStream, ArchiveStreamFactory}
+import org.apache.tika.io.TaggedIOException
 
 import scala.util.{Failure, Success, Try}
 
@@ -16,9 +17,9 @@ import scala.util.{Failure, Success, Try}
   * @param maxBytes maximum number of bytes that can be read from an InputStream
   */
 private class ArchiveSourceReader(
-                           reader: StreamReader,
-                           maxBytes: Int
-                         ) extends SourceReader with LazyLogging {
+                                   reader: StreamReader,
+                                   maxBytes: Int,
+                                 ) extends SourceReader with LazyLogging {
 
   import SourceReader.validExtensions
 
@@ -29,7 +30,7 @@ private class ArchiveSourceReader(
     * Read text from the configured input stream.  This input will get buffered.
     * @return
     */
-  def load(source: Source): List[String] = {
+  def read(source: Source): List[String] = {
     val constrainedInput =
       new LimitedInputStream(
         new BufferedInputStream(source.input),
@@ -46,14 +47,18 @@ private class ArchiveSourceReader(
             validExtensions.exists(ext => entry.getName.matches(s".*\\.$ext$$"))
           )
           .map(entry =>
-            load(Source(ais, entry.getName)).head
+            read(Source(ais, entry.getName)).head
           )
           .toList
 
       case _ =>
-        List(
-          reader.readText(constrainedInput, source.name)
-        )
+        try {
+          List(
+            reader.readText(source.copy(input = constrainedInput)).trim
+          )
+        } catch {
+          case e: TaggedIOException => throw e.getCause
+        }
     }
   }
 

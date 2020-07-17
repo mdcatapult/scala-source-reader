@@ -1,4 +1,4 @@
-package io.mdcatapult.doclib.source
+package io.mdcatapult.source
 
 /**
   * Loader object to allow easy instantiation and detection of appropriate loader
@@ -42,6 +42,6 @@ trait SourceReader {
     *         If it is an archive of some kind that can be broken up into sub-sources then there will be 1 String for
     *         each sub-source.
     */
-  def load(source: Source): List[String]
+  def read(source: Source): List[String]
 
 }
