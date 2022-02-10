@@ -32,7 +32,8 @@ class SeparatedValueStreamReader(defaultReader: StreamReader) extends StreamRead
     val escape = '\\'
 
     val charset: Charset = encodingDetector.detect(input, new Metadata())
-    val p = CSVParser.parse(input, charset, CSVFormat.DEFAULT.withEscape(escape).withDelimiter(fieldDelimiter))
+    val csvFormat = CSVFormat.Builder.create().setEscape(escape).setDelimiter(fieldDelimiter).build()
+    val p = CSVParser.parse(input, charset, csvFormat)
 
     try {
       val rows: Iterator[CSVRecord] = p.iterator.asScala
