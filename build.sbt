@@ -27,25 +27,34 @@ lazy val root = (project in file("."))
       }
     },
     libraryDependencies ++= {
+      val kleinUtilVersion = "1.2.4"
+
       val apachePoiVersion = "4.1.2"
-      val tikaVersion = "1.24.1"
+      val tikaVersion = "1.28"
+      val scalacticVersion = "3.2.10"
+      val scalaTestVersion = "3.2.11"
+      val scalaMockVersion = "5.2.0"
+      val commonsFileUpload = "1.4"
+      val scalaLoggingVersion = "3.9.4"
+      val jaiImageJPEG2000Version = "1.4.0"
+      val jbig2ImageioVersion = "3.0.3"
 
       Seq(
-        "io.mdcatapult.klein" %% "util"                 % "1.2.3" % Test,
-        "org.scalactic" %% "scalactic"                  % "3.2.0" % Test,
-        "org.scalatest" %% "scalatest"                  % "3.2.0" % Test,
-        "org.scalamock" %% "scalamock"                  % "4.4.0" % Test,
-        "commons-fileupload" % "commons-fileupload"     % "1.4",
-        "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
+        "io.mdcatapult.klein" %% "util"                 % kleinUtilVersion % Test,
+        "org.scalactic" %% "scalactic"                  % scalacticVersion % Test,
+        "org.scalatest" %% "scalatest"                  % scalaTestVersion % Test,
+        "org.scalamock" %% "scalamock"                  % scalaMockVersion % Test,
+        "commons-fileupload" % "commons-fileupload"     % commonsFileUpload,
+        "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion,
         "org.apache.tika" % "tika-core"                 % tikaVersion,
         "org.apache.tika" % "tika-parsers"              % tikaVersion,
         "org.apache.tika" % "tika-langdetect"           % tikaVersion,
         "org.apache.poi" % "poi"                        % apachePoiVersion,
         "org.apache.poi" % "poi-ooxml"                  % apachePoiVersion,
         "org.apache.poi" % "poi-ooxml-schemas"          % apachePoiVersion,
-        "org.apache.pdfbox" % "jbig2-imageio"           % "3.0.3",
-        "com.github.jai-imageio" % "jai-imageio-jpeg2000" % "1.3.0",
-        "org.xerial" % "sqlite-jdbc"                    % "3.32.3.1",
+        "org.apache.pdfbox" % "jbig2-imageio"           % jbig2ImageioVersion,
+        "com.github.jai-imageio" % "jai-imageio-jpeg2000" % jaiImageJPEG2000Version
+//      "org.xerial" % "sqlite-jdbc"                    % "3.32.3.1"
       )
     }
   )
