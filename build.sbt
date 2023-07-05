@@ -54,7 +54,6 @@ lazy val root = (project in file("."))
         "org.apache.tika" % "tika-langdetect"           % tikaVersion,
         "org.apache.poi" % "poi"                        % apachePoiVersion,
         "org.apache.poi" % "poi-ooxml"                  % apachePoiVersion,
-        "org.apache.poi" % "poi-ooxml-schemas"          % apachePoiXMLVersion,
         "org.apache.pdfbox" % "jbig2-imageio"           % jbig2ImageioVersion,
         "com.github.jai-imageio" % "jai-imageio-jpeg2000" % jaiImageJPEG2000Version
 //      "org.xerial" % "sqlite-jdbc"                    % "3.32.3.1"
