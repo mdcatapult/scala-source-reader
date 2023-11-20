@@ -6,7 +6,7 @@ package io.mdcatapult.source
 object SourceReader {
 
   /** list of valid extensions to be handled in archive format **/
-  val validExtensions = List(
+  val validExtensions: List[String] = List(
     "bz2", "csv", "docx", "htm", "html", "nam", "nam.gz", "nxml",
     "odp", "ods", "odt", "pdf", "pptx", "sgm", "sgml", "shtm", "shtml",
     "txt", "txt.gz", "tar", "tar.001", "tar.bz2", "tar.gz", "tbz2", "tgz", "tsv",
