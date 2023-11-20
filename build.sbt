@@ -1,3 +1,17 @@
+import com.gilcloud.sbt.gitlab.{GitlabCredentials,GitlabPlugin}
+
+GitlabPlugin.autoImport.gitlabGroupId     :=  Some(73679838)
+GitlabPlugin.autoImport.gitlabProjectId   :=  Some(50550924)
+
+GitlabPlugin.autoImport.gitlabCredentials  := {
+  sys.env.get("GITLAB_PRIVATE_TOKEN") match {
+    case Some(token) =>
+      Some(GitlabCredentials("Private-Token", token))
+    case None =>
+      Some(GitlabCredentials("Job-Token", sys.env.get("CI_JOB_TOKEN").get))
+  }
+}
+
 lazy val scala_2_13 = "2.13.3"
 
 lazy val root = (project in file("."))
@@ -16,23 +30,22 @@ lazy val root = (project in file("."))
       "-Xlint",
       "-Xfatal-warnings",
     ),
-    resolvers         ++= Seq(
-      "MDC Nexus Releases" at "https://nexus.wopr.inf.mdc/repository/maven-public/"),
-    credentials       += {
-      sys.env.get("NEXUS_PASSWORD") match {
-        case Some(p) =>
-          Credentials("Sonatype Nexus Repository Manager", "nexus.wopr.inf.mdc", "gitlab", p)
+    resolvers += ("gitlab" at "https://gitlab.com/api/v4/projects/50550924/packages/maven"),
+    credentials += {
+      sys.env.get("GITLAB_PRIVATE_TOKEN") match {
+        case Some(token) =>
+          Credentials("GitLab Packages Registry", "gitlab.com", "Private-Token", token)
         case None =>
-          Credentials(Path.userHome / ".sbt" / ".credentials")
+          Credentials("GitLab Packages Registry", "gitlab.com", "Job-Token", sys.env.get("CI_JOB_TOKEN").get)
       }
     },
     libraryDependencies ++= {
-      val kleinUtilVersion = "1.2.4"
+      val kleinUtilVersion = "1.2.6"
 
       val apachePoiVersion = "4.1.2"
       val tikaVersion = "1.28"
-      val scalacticVersion = "3.2.10"
-      val scalaTestVersion = "3.2.11"
+      val scalacticVersion = "3.2.15"
+      val scalaTestVersion = "3.2.15"
       val scalaMockVersion = "5.2.0"
       val commonsFileUpload = "1.4"
       val scalaLoggingVersion = "3.9.4"
@@ -51,21 +64,10 @@ lazy val root = (project in file("."))
         "org.apache.tika" % "tika-langdetect"           % tikaVersion,
         "org.apache.poi" % "poi"                        % apachePoiVersion,
         "org.apache.poi" % "poi-ooxml"                  % apachePoiVersion,
-        "org.apache.poi" % "poi-ooxml-schemas"          % apachePoiVersion,
+        "org.apache.poi" % "poi-ooxml-schemas"           % apachePoiVersion,
         "org.apache.pdfbox" % "jbig2-imageio"           % jbig2ImageioVersion,
         "com.github.jai-imageio" % "jai-imageio-jpeg2000" % jaiImageJPEG2000Version
 //      "org.xerial" % "sqlite-jdbc"                    % "3.32.3.1"
       )
     }
   )
-  .settings(
-    publishSettings: _*
-  )
-
-lazy val publishSettings = Seq(
-  publishTo := {
-    val version = if (isSnapshot.value) "snapshots" else "releases"
-    Some("MDC Maven Repo" at s"https://nexus.wopr.inf.mdc/repository/maven-$version/")
-  },
-  credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
-)
