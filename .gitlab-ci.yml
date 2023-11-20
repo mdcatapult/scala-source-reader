@@ -15,36 +15,36 @@ cache:
     - "sbt-cache/target"
 
 default:
-  image: registry.mdcatapult.io/informatics/docker-images/ci/scala
+  image: registry.gitlab.com/medicines-discovery-catapult/informatics/docker-images/ci/sbt:latest
 
 test:
   stage: test
-  tags:
-    - wopr
   script:
     - sbt +clean coverage +test coverageReport
   coverage: /.*Coverage was \[(\d+.\d+)\%\]/
 
 publish-snapshot:
   stage: publish
-  tags:
-    - wopr
   script:
     - sbt +publish
-  only:
-    - develop
   except:
+    refs:
+      - main
     variables:
       - $CI_COMMIT_MESSAGE =~ /^Setting version to.*/
 
 release-master:
   stage: publish
-  tags:
-    - wopr
   script:
-    - /scripts/release.sh -b -r develop
+    - cictl exec release sbt
   only:
-    - master
+    - main
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^Setting version to.*/
+
+sast:
+  stage: test
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
