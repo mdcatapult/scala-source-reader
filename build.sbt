@@ -44,7 +44,7 @@ lazy val root = (project in file("."))
 
       val apachePoiVersion = "5.2.2"
       val apachePoiXMLVersion = "4.1.2"
-      val tikaVersion = "1.28.5"
+      val tikaVersion = "2.9.2"
       val scalacticVersion = "3.2.15"
       val scalaTestVersion = "3.2.15"
       val scalaMockVersion = "5.2.0"
@@ -63,6 +63,7 @@ lazy val root = (project in file("."))
         "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion,
         "org.apache.logging.log4j" % "log4j-core"       % log4jVersion,
         "org.apache.tika" % "tika-core"                 % tikaVersion,
+        "org.apache.tika" % "tika-parsers-standard-package" % tikaVersion,
         "org.apache.tika" % "tika-parsers"              % tikaVersion,
         "org.apache.tika" % "tika-langdetect"           % tikaVersion,
         "org.apache.poi" % "poi"                        % apachePoiVersion,

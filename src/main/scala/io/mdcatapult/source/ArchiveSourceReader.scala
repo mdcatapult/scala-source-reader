@@ -1,11 +1,25 @@
-package io.mdcatapult.source
+/*
+ * Copyright 2024 Medicines Discovery Catapult
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import java.io.{BufferedInputStream, InputStream}
+package io.mdcatapult.source
 
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.commons.compress.archivers.{ArchiveInputStream, ArchiveStreamFactory}
-import org.apache.tika.io.TaggedIOException
 
+import java.io.{BufferedInputStream, InputStream}
 import scala.util.{Failure, Success, Try}
 
 /**
@@ -31,15 +45,15 @@ private class ArchiveSourceReader(
     * @return
     */
   def read(source: Source): List[String] = {
-    val constrainedInput =
+    val constrainedInput = {
       new LimitedInputStream(
         new BufferedInputStream(source.input),
         maxBytes
       )
-
+    }
     archiveStream(constrainedInput) match {
 
-      case ais: ArchiveInputStream =>
+      case ais: ArchiveInputStream[_] =>
         Iterator.continually(ais.getNextEntry)
           .takeWhile(_ != null)
           .filterNot(_.isDirectory)
@@ -57,7 +71,7 @@ private class ArchiveSourceReader(
             reader.readText(source.copy(input = constrainedInput)).trim
           )
         } catch {
-          case e: TaggedIOException => throw e.getCause
+          case e: Exception => throw e.getCause
         }
     }
   }
@@ -66,9 +80,10 @@ private class ArchiveSourceReader(
     * test if input is an archive and return appropriate stream of type
     * @return
     */
-  private def archiveStream(input: InputStream): InputStream =
+  private def archiveStream(input: InputStream): InputStream = {
     Try(new ArchiveStreamFactory().createArchiveInputStream(input)) match {
       case Success(ais) => ais
       case Failure(_) => input
     }
+  }
 }
