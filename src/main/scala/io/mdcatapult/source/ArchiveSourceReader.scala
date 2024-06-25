@@ -81,8 +81,15 @@ private class ArchiveSourceReader(
     */
   private def archiveStream(input: InputStream): InputStream = {
     Try(new ArchiveStreamFactory().createArchiveInputStream(input)) match {
-      case Success(ais) => ais
-      case Failure(_) => input
+      case Success(ais: ArchiveInputStream[_]) => {
+        println("here")
+        ais
+      }
+      case Failure(e: Exception) => {
+        System.out.println(e)
+        input
+      }
+      case Failure(t: Throwable) => input
     }
   }
 }
