@@ -17,10 +17,10 @@
 package io.mdcatapult.source
 
 import com.typesafe.scalalogging.LazyLogging
-import org.apache.commons.compress.archivers.{ArchiveInputStream, ArchiveStreamFactory}
+import org.apache.commons.compress.archivers.{ArchiveException, ArchiveInputStream, ArchiveStreamFactory}
 
 import java.io.{BufferedInputStream, InputStream}
-import scala.util.{Failure, Success, Try}
+import scala.util.control.Exception.catching
 
 /**
   * Recursively parse an archive to discover all [[Source]]s which are read into a list of strings - one for each Source
@@ -80,16 +80,18 @@ private class ArchiveSourceReader(
     * @return
     */
   private def archiveStream(input: InputStream): InputStream = {
-    Try(new ArchiveStreamFactory().createArchiveInputStream(input)) match {
-      case Success(ais: ArchiveInputStream[_]) => {
-        println("here")
-        ais
+    // Previously this used a Try block but apache commons compress has changed the signature of 'createArchiveInputStream'
+    // and the scala compiler can't figure out what it returns due to type erasure. We now have to use an option
+    // and cast it to the highest class possible i.e. InputStream. We don't actually care what the type of
+    // ArchiveInputStream it is as long as it worked
+    val maybeInputStream: Option[InputStream] = catching(classOf[ArchiveException]).opt {
+        new ArchiveStreamFactory().createArchiveInputStream(input).asInstanceOf[InputStream]
       }
-      case Failure(e: Exception) => {
-        System.out.println(e)
-        input
+    maybeInputStream match {
+          // Use the inputStream here, which is a subtype of ArchiveInputStream
+      case Some(archiveInputStream) => archiveInputStream
+          // Handle the case where `createArchiveInputStream` has thrown an `ArchiveException`
+        case None => input
       }
-      case Failure(t: Throwable) => input
-    }
   }
 }
