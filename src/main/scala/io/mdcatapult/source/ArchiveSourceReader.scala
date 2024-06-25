@@ -45,12 +45,11 @@ private class ArchiveSourceReader(
     * @return
     */
   def read(source: Source): List[String] = {
-    val constrainedInput = {
+    val constrainedInput =
       new LimitedInputStream(
         new BufferedInputStream(source.input),
         maxBytes
       )
-    }
     archiveStream(constrainedInput) match {
 
       case ais: ArchiveInputStream[_] =>
