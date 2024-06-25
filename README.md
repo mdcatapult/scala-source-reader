@@ -13,3 +13,6 @@ no character (BOM).  We want to ignore this character but Tika throws an excepti
 ## Notes
 The `org.xenial.sqlite-jdbc` driver isn't actually used but was previously included to suppress a warning that Apache Tika needs it to process sqlite files.
 We are not processing sqlite so is now removed. It has been left in the `build.sbt` but commented out.
+
+### License
+This project is licensed under the terms of the Apache 2 license, which can be found in the repository as `LICENSE.txt`
